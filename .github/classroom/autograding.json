@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "Tests sobre lista enlazada",
+      "setup": "",
+      "run": "go test /tests/linkedlist_test.go",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": null
+    },
+    {
+      "name": "Tests sobre listas con slices",
+      "setup": "",
+      "run": "go test /tests/slicelist_test.go",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": null
+    }
+  ]
+}
