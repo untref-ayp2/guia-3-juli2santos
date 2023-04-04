@@ -42,4 +42,17 @@ func main() {
 
 	fmt.Println(l)
 
+	lista := linkedlist.NewLinkedList[int]()
+	lista.Append(10)
+	lista.Append(20)
+	lista.Append(30)
+
+	l.ConcatenarListas(l, lista)
+
+	fmt.Println(l)
+
+	lista2 := linkedlist.NewLinkedList[int]()
+
+	lista2.IntercalarListas(l, lista)
+
 }
