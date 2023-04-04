@@ -26,6 +26,7 @@ func newNode[T comparable](value T) *node[T] {
 type LinkedList[T comparable] struct {
 	head *node[T] // puntero al primer nodo
 	tail *node[T] // puntero al último nodo
+	size int
 }
 
 // NewLinkedList crea una nueva lista enlazada, vacía
@@ -44,10 +45,12 @@ func (l *LinkedList[T]) Append(value T) {
 	if l.head == nil {
 		l.head = newNode
 		l.tail = newNode
+		l.size++
 		return
 	}
 	l.tail.next = newNode
 	l.tail = newNode
+	l.size++
 }
 
 // Prepend agrega un nuevo nodo, con el valor recibido,
@@ -58,10 +61,12 @@ func (l *LinkedList[T]) Prepend(value T) {
 	if l.head == nil {
 		l.head = newNode
 		l.tail = newNode
+		l.size++
 		return
 	}
 	newNode.next = l.head
 	l.head = newNode
+	l.size++
 }
 
 // InsertAt agrega un nuevo nodo, con el valor recibido,
@@ -75,12 +80,14 @@ func (l *LinkedList[T]) InsertAt(value T, position int) {
 	newNode := newNode(value)
 	if position == 0 {
 		l.Prepend(value)
+		l.size++
 		return
 	}
 	current := l.head
 	for current != nil && position > 1 {
 		current = current.next
 		position--
+		l.size++
 	}
 	if current == nil {
 		return
@@ -97,12 +104,14 @@ func (l *LinkedList[T]) Remove(value T) {
 	}
 	if l.head.value == value {
 		l.head = l.head.next
+		l.size--
 		return
 	}
 	current := l.head
 	for current.next != nil {
 		if current.next.value == value {
 			current.next = current.next.next
+			l.size--
 			return
 		}
 		current = current.next
@@ -155,7 +164,7 @@ func (l *LinkedList[T]) Search(value T) int {
 func (l *LinkedList[T]) Get(position int) (T, error) {
 	if l.head == nil {
 		var t T
-		return t, errors.New("Lista vacía")
+		return t, errors.New("lista vacía")
 	}
 	current := l.head
 	for current != nil && position > 0 {
@@ -164,7 +173,7 @@ func (l *LinkedList[T]) Get(position int) (T, error) {
 	}
 	if current == nil {
 		var t T
-		return t, errors.New("Posición inválida")
+		return t, errors.New("posición inválida")
 	}
 	return current.value, nil
 }
@@ -182,4 +191,51 @@ func (l *LinkedList[T]) Size() int {
 		position++
 	}
 	return position
+}
+
+func (l *LinkedList[T]) ConcatenarListas(l1, l2 *LinkedList[T]) *LinkedList[T] {
+
+	// si lista 1 esta vacia, develve la lista 2
+	if l1.head == nil {
+		return l2
+	}
+	// si l2 esta vacia no hace nada y devuelve la lista 1
+	if l2.head == nil {
+		return l1
+	}
+	l1.tail.next = l2.head // aca apunto el nodo next de l1 al head de l2
+	l1.tail = l2.tail      // aca apunto el ultimo nodo de l1 al ultimo de l2
+	l1.size += l2.size     // sumo los size de ambas
+	return l1
+}
+
+func (l *LinkedList[T]) IntercalarListas(l1, l2 *LinkedList[T]) *LinkedList[T] {
+
+	if l1 == nil || l2 == nil {
+		return nil
+	}
+
+	result := &LinkedList[T]{} // creo una linkedList vacia
+	current1 := l1.head
+	current2 := l2.head // los curren apuntan a los nodos head de las listas que recibo
+
+	for current1 != nil && current2 != nil {
+		result.Append(current1.value)
+		result.Append(current2.value) // itero ambas y voy agregando el valor de una y otra
+		current1 = current1.next
+		current2 = current2.next // muevo los current al siguiente nodo
+	}
+
+	// Agregar los elementos restantes de la primera lista, uso el mismo current así empiezo donde termino el otro for de arriba, lo mismo para las 2 listas
+	for current1 != nil {
+		result.Append(current1.value)
+		current1 = current1.next
+	}
+	for current2 != nil {
+		result.Append(current2.value)
+		current2 = current2.next
+	}
+
+	return result
+
 }
